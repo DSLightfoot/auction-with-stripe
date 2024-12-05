@@ -1,0 +1,104 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if listing_info.active == False and user == bid_info.bidder %}
+        <div class="alert-info">
+            {{ win_message }}
+        </div>
+    {% endif %}
+
+    {% if listing_info.active == False and user == listing_info.lister %}
+        <div class="alert-info">
+            {{ end_message }}
+        </div>
+    {% endif %}
+
+    {% if listing_info.active == False and winner %}
+            {% if not listing_info.active and listing_info.number_of_bids > 0 and not listing_info.paid %}
+                <div>
+                    <button class="end_auction_btn" id="pay-button-{{ listing_info.listing_id }}">Pay Now</button>
+                </div>
+                <script src="https://js.stripe.com/v3/"></script>
+                <script>
+                    const stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
+            
+                    document.getElementById("pay-button-{{ listing_info.listing_id }}").addEventListener("click", function() {
+                    fetch("/pay/{{ listing_info.listing_id }}/")
+                        .then(response => response.json())
+                        .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                        } else {
+                            stripe.redirectToCheckout({ sessionId: data.id });
+                        }
+                        });
+                    });
+                </script>
+            {% endif %}
+        {% endif %}
+
+    <h2>Listing: {{ listing_info.title }} </h2>
+        
+    <div class="item_info">
+        <div class="main_listing_photo_wrapper">
+            <div id="main_listing_photo">
+                <img src="{{ listing_info.photo }}" alt="photo">
+            </div>
+        </div>
+        
+        <div class="item_description">
+            <h5>Description: </h5>
+            <p>{{ listing_info.description }}</p>
+        </div>
+
+        <div class="current_bid">
+            Current Bid: ${{ listing_info.starting_bid|floatformat:2  }}
+        </div>
+
+        <div class="bid_info">
+            {% if listing_info.number_of_bids == 0 %}
+                0 bids so far. No current bidder
+
+            {% else %}
+                {{ listing_info.number_of_bids }} bid(s) so far. 
+                <a href="{% url 'index' %}">{{ bid_info.bidder }}</a> is the current bidder. 
+            {% endif %}
+
+             
+        </div>
+
+        <hr>
+
+        <div class="item_info">
+            <p>Lister: <a href="{% url 'user_profile' listing_info.lister %}">{{ listing_info.lister }}</a></p>
+            <p>Category: {{ listing_info.category }}</p>
+            <p>Number of Watchers: {{ number_of_watchers }}</p>
+        </div>
+
+        <hr>
+
+        <div class="item_comments">
+            {% if comment_message %}
+                <div class="alert-info">
+                    {{ comment_message }}
+                </div>
+            {% endif %}
+
+            <h5>Comments:</h5>
+
+            <hr>
+
+            {% for comments in comment_info %}
+                <a href="{% url 'user_profile' comments.commenter%}">{{comments.commenter}}</a> · {{ comments.time_of_comment }}
+                <div class="comment">
+                    {{ comments.comment }} 
+                </div>
+             
+                <hr>
+            {% endfor %}
+
+            
+        </div>
+
+    </div>
+{% endblock %}
