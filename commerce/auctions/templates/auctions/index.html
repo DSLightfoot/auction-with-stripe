@@ -1,0 +1,44 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    
+    <div id="search_bar">
+        <form action="{% url 'search'%}" method="post">
+            {% csrf_token %}
+            <input type="search" placeholder="Search" id="search_bar" name="query">
+        </form>
+    </div>
+
+    {% for listings in auctions %}
+        {% if listings.active == True %}
+            <div class="active_listings">
+
+                <a href="{% url 'listing' listings.listing_id %}" id="active_listing_link">
+                    <div class="index_item_photo" id="active_listing_photo">
+                        <img src="{{listings.photo}}">
+                    </div>
+
+                    <div id="active_listing_info">
+                        {{listings.title}}
+                        <br>
+                        Price: ${{listings.starting_bid|floatformat:2}}
+                        <br>
+                        Listed: {{listings.time_of_listing}}
+                        <br>
+
+                        {% for watchlists in watchlist %}
+                            {% if watchlists.listing == listings %}
+
+                            Number of Watchers: {{watchlists.watcher.count}}
+
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </a>
+
+            </div>
+        {% endif %}
+    {% endfor %}
+    
+{% endblock %}

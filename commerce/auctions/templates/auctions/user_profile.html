@@ -1,0 +1,136 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ user_info.username }}'s Profile:</h2>
+
+    <hr>
+
+    {% if user_info.username == current_user %}
+        <h4>Toggle Listings:</h4>
+
+        <button class="toggle-button" onclick="showMyListings()">My Listings</button>
+        <button class="toggle-button" onclick="showWonListings()">Won Listings</button>
+
+        <hr>
+    {% endif %}
+
+    <div id="my_listings_section">
+        <h4>Active Listings:</h4>
+        {% if active_listings %}
+            {% for listings in active_listings %}
+                <div class="active_listings">
+                    <a href="{% url 'listing' listings.listing_id %}" id="active_listing_link">
+                        <div class="index_item_photo" id="active_listing_photo">
+                            <img src="{{listings.photo}}">
+                        </div>
+                        <div id="active_listing_info">
+                            {{listings.title}}
+                            <br>
+                            Price: ${{listings.starting_bid|floatformat:2}}
+                            <br>
+                            Listed: {{listings.time_of_listing}}
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No active listings.</p>
+        {% endif %}
+        <hr>
+    
+        <h4>Ended Listings:</h4>
+        {% if ended_listings %}
+            {% for listings in ended_listings %}
+                <div class="active_listings">
+                    <a href="{% url 'listing' listings.listing_id %}" id="active_listing_link">
+                        <div class="index_item_photo" id="active_listing_photo">
+                            <img src="{{listings.photo}}">
+                        </div>
+                        <div id="active_listing_info">
+                            {{listings.title}}
+                            <br>
+                            Price: ${{listings.starting_bid|floatformat:2}}
+                            <br>
+                            Listed: {{listings.time_of_listing}}
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No ended listings.</p>
+        {% endif %}
+    </div>
+    
+    <div id="won_listings_section" style="display:none;">
+        <h4>Won Listings:</h4>
+        {% if won_listings %}
+            {% for listings in won_listings %}
+                <div class="active_listings">
+                    <a href="{% url 'listing' listings.listing_id %}" id="active_listing_link">
+                        <div class="index_item_photo" id="active_listing_photo">
+                            <img src="{{listings.photo}}">
+                        </div>
+                        <div id="active_listing_info">
+                            {{listings.title}}
+                            <br>
+                            Price: ${{listings.starting_bid|floatformat:2}}
+                            <br>
+                            Listed: {{listings.time_of_listing}}
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No won listings.</p>
+        {% endif %}
+    </div>
+
+    <style>
+        .toggle-button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+
+        .toggle-button:hover {
+            background-color: #45a049;
+        }
+
+        .active_listings {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .index_item_photo img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        #active_listing_info {
+            margin-top: 10px;
+        }
+    </style>
+    
+    <script>
+    function showMyListings() {
+        document.getElementById('my_listings_section').style.display = 'block';
+        document.getElementById('won_listings_section').style.display = 'none';
+    }
+    
+    function showWonListings() {
+        document.getElementById('my_listings_section').style.display = 'none';
+        document.getElementById('won_listings_section').style.display = 'block';
+    }
+    </script>
+{% endblock %}
