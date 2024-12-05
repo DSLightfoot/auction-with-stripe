@@ -1,0 +1,37 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h1>New Listing</h1>
+
+    {% if message %}
+        <div class="alert-info">{{ message }}</div>
+    {% endif %}
+
+    <!-- Need to add
+        *Title for Listing ✓
+        *Description for Listing ✓
+        *Starting Bid for Listing ✓
+        *Url of Image for Listing ✓
+        *Category for Listing (i.e. Fashion, Toys, etc) ✓
+        
+    -->
+
+        <!-- The action is where the form is being sent to -->
+    <form action="{% url 'newListing' %}" method="post">
+        {% csrf_token %}
+        <div>
+            <input type="text" name="title" placeholder="Title..."></input>
+            <div>
+                <textarea name="description" placeholder="Description..." cols="66" rows="10"></textarea>
+            </div>
+            <input type="url" name="url" placeholder="Photo Url">
+            <input type="text" name="category" placeholder="Category">
+            <input type="number" name="starting_bid" placeholder="Starting Bid">
+        </div>        
+        
+
+        <input type="submit" value="Submit">
+        
+
+    </form>
+{% endblock %}

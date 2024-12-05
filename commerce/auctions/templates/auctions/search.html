@@ -1,0 +1,28 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>
+        Results:
+    </h2>
+    {% for results in query %}
+        <div class="active_listings">
+
+            <a href="{% url 'listing' results.title %}" id="active_listing_link">
+                <div class="index_item_photo" id="active_listing_photo">
+                    <img src="{{results.photo}}">
+                </div>
+
+                <div id="active_listing_info">
+                    {{results.title}}
+
+                <br>
+                    Price: ${{results.starting_bid|floatformat:2}}
+                <br>
+                    Listed: {{results.time_of_listing}}
+                
+                </div>
+            </a>
+
+        </div>
+    {% endfor %}
+{% endblock %}
